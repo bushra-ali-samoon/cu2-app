@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ForgetPasswordController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -27,4 +28,10 @@ Route::post('/login', [LoginController::class, 'login'])->name('login.store');
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware('auth')->name('dashboard');
+
+ 
+Route::get('password/reset', [ForgetPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('password/email', [ForgetPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('password/reset/{token}', [ForgetPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::post('password/reset', [ForgetPasswordController::class, 'reset'])->name('password.update');
 

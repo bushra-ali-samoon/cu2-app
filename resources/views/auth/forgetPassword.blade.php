@@ -1,26 +1,26 @@
 <!DOCTYPE html>
 <html class="h-full" data-kt-theme="true" data-kt-theme-mode="light" dir="ltr" lang="en">
- <head><base href="../../../../">
+ <head><base href="../../../../../">
   <title>
-   Metronic - Tailwind CSS Sign In
+   Metronic - Tailwind CSS Change Password
   </title>
   <meta charset="utf-8"/>
   <meta content="follow, index" name="robots"/>
-  <link href="https://127.0.0.1:8001/metronic-tailwind-html/demo1/authentication/branded/sign-in" rel="canonical"/>
+  <link href="https://127.0.0.1:8001/metronic-tailwind-html/demo1/authentication/branded/reset-password/change-password" rel="canonical"/>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
-  <meta content="Sign in page, using Tailwind CSS" name="description"/>
+  <meta content="Change password page, powered by Tailwind CSS" name="description"/>
   <meta content="@keenthemes" name="twitter:site"/>
   <meta content="@keenthemes" name="twitter:creator"/>
   <meta content="summary_large_image" name="twitter:card"/>
-  <meta content="Metronic - Tailwind CSS Sign In" name="twitter:title"/>
-  <meta content="Sign in page, using Tailwind CSS" name="twitter:description"/>
+  <meta content="Metronic - Tailwind CSS Change Password" name="twitter:title"/>
+  <meta content="Change password page, powered by Tailwind CSS" name="twitter:description"/>
   <meta content="assets/media/app/og-image.png" name="twitter:image"/>
-  <meta content="https://127.0.0.1:8001/metronic-tailwind-html/demo1/authentication/branded/sign-in" property="og:url"/>
+  <meta content="https://127.0.0.1:8001/metronic-tailwind-html/demo1/authentication/branded/reset-password/change-password" property="og:url"/>
   <meta content="en_US" property="og:locale"/>
   <meta content="website" property="og:type"/>
   <meta content="@keenthemes" property="og:site_name"/>
-  <meta content="Metronic - Tailwind CSS Sign In" property="og:title"/>
-  <meta content="Sign in page, using Tailwind CSS" property="og:description"/>
+  <meta content="Metronic - Tailwind CSS Change Password" property="og:title"/>
+  <meta content="Change password page, powered by Tailwind CSS" property="og:description"/>
   <meta content="assets/media/app/og-image.png" property="og:image"/>
   <link href="assets/media/app/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
   <link href="assets/media/app/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png"/>
@@ -71,64 +71,26 @@
   <div class="grid lg:grid-cols-2 grow">
    <div class="flex justify-center items-center p-8 lg:p-10 order-2 lg:order-1">
     <div class="kt-card max-w-[370px] w-full">
-    <form action="{{ route('login.store') }}" class="kt-card-content flex flex-col gap-5 p-10" id="sign_in_form" method="POST">
+   <form method="POST" action="{{ route('password.email') }}" class="kt-card-content flex flex-col gap-5 p-10">
     @csrf
     <div class="text-center mb-2.5">
-        <h3 class="text-lg font-medium text-mono leading-none mb-2.5">Sign in</h3>
-        <div class="flex items-center justify-center font-medium">
-            <span class="text-sm text-secondary-foreground me-1.5">Need an account?</span>
-         </div>
+        <h3 class="text-lg font-medium text-mono">Forgot Password</h3>
+        <span class="text-sm text-secondary-foreground">Enter your email to receive reset link</span>
     </div>
 
-    <div class="grid grid-cols-2 gap-2.5">
-        <a class="kt-btn kt-btn-outline justify-center" href="#">
-            <img alt="" class="size-3.5 shrink-0" src="{{ asset('assets/media/brand-logos/google.svg') }}"/>
-            Use Google
-        </a>
-        <a class="kt-btn kt-btn-outline justify-center" href="#">
-            <img alt="" class="size-3.5 shrink-0 dark:hidden" src="{{ asset('assets/media/brand-logos/apple-black.svg') }}"/>
-            <img alt="" class="size-3.5 shrink-0 light:hidden" src="{{ asset('assets/media/brand-logos/apple-white.svg') }}"/>
-            Use Apple
-        </a>
-    </div>
-
-    <div class="flex items-center gap-2">
-        <span class="border-t border-border w-full"></span>
-        <span class="text-xs text-muted-foreground font-medium uppercase">Or</span>
-        <span class="border-t border-border w-full"></span>
-    </div>
+    @if (session('status'))
+        <div class="text-green-500 text-xs mb-2">{{ session('status') }}</div>
+    @endif
 
     <div class="flex flex-col gap-1">
         <label class="kt-form-label font-normal text-mono">Email</label>
-        <input name="email" type="email" placeholder="email@email.com" class="kt-input @error('email') is-invalid @enderror" value="{{ old('email') }}" required autofocus>
+        <input name="email" type="email" placeholder="email@email.com" class="kt-input @error('email') is-invalid @enderror" required>
         @error('email')
             <span class="text-red-500 text-xs mt-1">{{ $message }}</span>
         @enderror
     </div>
 
-    <div class="flex flex-col gap-1">
-        <div class="flex items-center justify-between gap-1">
-            <label class="kt-form-label font-normal text-mono">Password</label>
-            <a class="text-sm kt-link shrink-0" href="{{ route('password.request') }}">Forgot Password?</a>
-        </div>
-        <div class="kt-input" data-kt-toggle-password="true">
-            <input name="password" type="password" placeholder="Enter Password" class="@error('password') is-invalid @enderror" required>
-            <button class="kt-btn kt-btn-sm kt-btn-ghost kt-btn-icon bg-transparent! -me-1.5" data-kt-toggle-password-trigger="true" type="button">
-                <span class="kt-toggle-password-active:hidden"><i class="ki-filled ki-eye text-muted-foreground"></i></span>
-                <span class="hidden kt-toggle-password-active:block"><i class="ki-filled ki-eye-slash text-muted-foreground"></i></span>
-            </button>
-        </div>
-        @error('password')
-            <span class="text-red-500 text-xs mt-1">{{ $message }}</span>
-        @enderror
-    </div>
-
-    <label class="kt-label">
-        <input class="kt-checkbox kt-checkbox-sm" name="remember" type="checkbox" value="1" {{ old('remember') ? 'checked' : '' }}/>
-        <span class="kt-checkbox-label">Remember me</span>
-    </label>
-
-    <button class="kt-btn kt-btn-primary flex justify-center grow" type="submit">Sign In</button>
+    <button class="kt-btn kt-btn-primary flex justify-center grow" type="submit">Send Reset Link</button>
 </form>
 
     </div>
