@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    // Show form
+    // Show signup form
     public function showSignUp()
     {
         return view('auth.sign-up');  
@@ -16,19 +16,18 @@ class AuthController extends Controller
 
     // Handle registration
     public function register(Request $request)
-{
-    $request->validate([
-        'email' => 'required|email|unique:users,email',
-        'password' => 'required|min:6|confirmed',
-    ]);
+    {
+        $request->validate([
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:6|confirmed',
+        ]);
 
-    \App\Models\User::create([
-        'name' => 'User',
-        'email' => $request->email,
-        'password' => bcrypt($request->password),
-    ]);
+        User::create([
+            'name' => 'User',
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
 
-    return redirect('/dashboard')->with('success', 'Account created successfully!');
-}
-
+        return redirect('/dashboard')->with('success', 'Account created successfully!');
+    }
 }

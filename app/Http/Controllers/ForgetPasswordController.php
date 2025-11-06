@@ -10,33 +10,35 @@ use Illuminate\Support\Str;
 
 class ForgetPasswordController extends Controller
 {
-    // Show form to request reset link
+    // Show "Forgot Password" form
     public function showLinkRequestForm()
     {
-        return view('auth.forgetPassword');
+        return view('auth.forgot-password');
     }
 
-    // Send reset link email
+    // Handle sending of reset link
     public function sendResetLinkEmail(Request $request)
     {
-        $request->validate(['email' => 'required|email']);
+        $request->validate([
+            'email' => 'required|email',
+        ]);
 
-        $status = Password::sendResetLink(
-            $request->only('email')
-        );
+        $status = Password::sendResetLink($request->only('email'));
 
-        return $status === Password::RESET_LINK_SENT
-                    ? back()->with(['status' => __($status)])
-                    : back()->withErrors(['email' => __($status)]);
+        if ($status === Password::RESET_LINK_SENT) {
+            return back()->with('status', __($status));
+        }
+
+        return back()->withErrors(['email' => __($status)]);
     }
 
-    // Show reset password form
+    // Show "Reset Password" form (when user clicks email link)
     public function showResetForm($token)
     {
-        return view('auth.forgetPassword', ['token' => $token]);
+        return view('auth.reset-password', ['token' => $token]);
     }
 
-    // Reset password
+    // Handle password reset submission
     public function reset(Request $request)
     {
         $request->validate([
@@ -48,16 +50,19 @@ class ForgetPasswordController extends Controller
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
-                $user->password = Hash::make($password);
-                $user->setRememberToken(Str::random(60));
-                $user->save();
+                $user->forceFill([
+                    'password' => Hash::make($password),
+                ])->setRememberToken(Str::random(60));
 
+                $user->save();
                 event(new PasswordReset($user));
             }
         );
 
-        return $status === Password::PASSWORD_RESET
-                    ? redirect()->route('login')->with('status', __($status))
-                    : back()->withErrors(['email' => [__($status)]]);
+        if ($status === Password::PASSWORD_RESET) {
+            return redirect()->route('login')->with('status', __($status));
+        }
+
+        return back()->withErrors(['email' => __($status)]);
     }
 }
