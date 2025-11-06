@@ -29,7 +29,7 @@ class LoginController extends Controller
 
         Auth::login($user);
 
-        return response()->json(['redirect' => route('dashboard')]);
+     return redirect()->route('dashboard');
     }
 
     public function showLogin()
@@ -43,7 +43,7 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return response()->json(['redirect' => route('dashboard')]);
+          return redirect()->route('dashboard');
         }
 
         return response()->json(['error' => 'Invalid email or password.']);
@@ -54,6 +54,6 @@ class LoginController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('/dashboard');
+        return redirect()->route('signup');
     }
 }
