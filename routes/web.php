@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ForgetPasswordController;
+use App\Http\Controllers\CourseController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -35,3 +36,8 @@ Route::post('password/email', [ForgetPasswordController::class, 'sendResetLinkEm
 Route::get('password/reset/{token}', [ForgetPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('password/reset', [ForgetPasswordController::class, 'reset'])->name('password.update');
 
+// Course Management (AJAX)
+Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
+Route::post('/courses', [CourseController::class, 'store'])->name('courses.store');
+Route::put('/courses/{course}', [CourseController::class, 'update'])->name('courses.update');
+Route::delete('/courses/{course}', [CourseController::class, 'destroy'])->name('courses.destroy');
