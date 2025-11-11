@@ -1583,7 +1583,7 @@
     <main class="grow pt-5" id="content" role="content">
      <!-- Container -->
      <div class="kt-container-fixed" id="contentContainer">
-     </div>
+      </div>
      <!-- End of Container -->
      <!-- Container -->
      <div class="kt-container-fixed">
@@ -1591,6 +1591,7 @@
        <div class="flex flex-col justify-center gap-2">
         <h1 class="text-xl font-medium leading-none text-mono">
          Dashboard
+                                @yield('content')
         </h1>
         <div class="flex items-center gap-2 text-sm font-normal text-secondary-foreground">
          Central Hub for Personal Customization
@@ -4448,5 +4449,7 @@
   <script src="assets/js/layouts/demo1.js">
   </script>
   <!-- End of Scripts -->
+ 
+
  </body>
 </html>

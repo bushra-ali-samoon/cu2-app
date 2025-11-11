@@ -1,187 +1,173 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Course Management</title>
+@extends('layouts.app')
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+@section('content')
+<div class="app-main flex-column flex-row-fluid" id="kt_app_main">
+    <div class="d-flex flex-column flex-column-fluid">
+        <main class="app-content flex-column-fluid" id="kt_app_content">
+            <div id="kt_app_content_container" class="app-container container-xxl">
 
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+                <!-- Card -->
+                <div class="card card-flush">
+                    <div class="card-header align-items-center py-5 gap-2 gap-md-5">
+                        <h3 class="card-title">Course Management</h3>
+                        <div class="card-toolbar">
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCourseModal">
+                                Add New Course
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body pt-0">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5" id="coursesTable">
+                            <thead>
+                                <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
+                                    <th>ID</th>
+                                    <th>Title</th>
+                                    <th>Slug</th>
+                                    <th>Description</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($courses as $course)
+                                    <tr data-id="{{ $course->id }}">
+                                        <td>{{ $course->id }}</td>
+                                        <td>{{ $course->title }}</td>
+                                        <td>{{ $course->slug }}</td>
+                                        <td>{{ $course->description }}</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-warning editCourse" 
+                                                data-id="{{ $course->id }}"
+                                                data-title="{{ $course->title }}"
+                                                data-slug="{{ $course->slug }}"
+                                                data-description="{{ $course->description }}">
+                                                Edit
+                                            </button>
+                                            <button class="btn btn-sm btn-danger deleteCourse" data-id="{{ $course->id }}">Delete</button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- End Card -->
 
-    <style>
-        body { background-color: #f8f9fa; }
-        .alert-position { position: fixed; top: 20px; right: 20px; z-index: 9999; }
-        .table-hover tbody tr:hover { background-color: #f1f1f1; }
-    </style>
-</head>
-<body>
-
-<div class="container py-5">
-    <h2 class="mb-4 fw-bold text-primary">Course Management</h2>
-
-    <!-- Alert -->
-    <div id="alertBox" class="alert alert-success alert-position d-none"></div>
-
-    <!-- Form -->
-    <form id="courseForm" class="mb-4 shadow p-4 bg-white rounded">
-        @csrf
-        <input type="hidden" id="course_id">
-
-        <div class="row">
-            <div class="col-md-4 mb-3">
-                <input type="text" id="title" name="title" class="form-control" placeholder="Enter Course Title" required>
             </div>
-
-            <div class="col-md-4 mb-3">
-                <input type="text" id="slug" name="slug" class="form-control" placeholder="Enter Slug" required>
-            </div>
-
-            <div class="col-md-4 mb-3">
-                <input type="text" id="description" name="description" class="form-control" placeholder="Enter Description" required>
-            </div>
-        </div>
-
-        <button type="submit" class="btn btn-primary" id="saveBtn">Add Course</button>
-    </form>
-
-    <!-- Table -->
-    <table class="table table-bordered table-striped table-hover align-middle bg-white shadow-sm rounded" id="courseTable">
-        <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Slug</th>
-                <th>Description</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($course as $c)
-            <tr data-id="{{ $c->id }}">
-                <td>{{ $c->id }}</td>
-                <td>{{ $c->title }}</td>
-                <td>{{ $c->slug }}</td>
-                <td>{{ $c->description }}</td>
-                <td>
-                    <button class="btn btn-sm btn-warning editBtn">Edit</button>
-                    <button class="btn btn-sm btn-danger deleteBtn">Delete</button>
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+        </main>
+    </div>
 </div>
 
-<!-- JS -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Add/Edit Course Modal -->
+<div class="modal fade" id="addCourseModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form id="courseForm" class="modal-content">
+            @csrf
+            <input type="hidden" name="course_id" id="course_id">
+            <div class="modal-header">
+                <h5 class="modal-title">Add / Edit Course</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label>Title</label>
+                    <input type="text" name="title" id="title" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label>Slug</label>
+                    <input type="text" name="slug" id="slug" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label>Description</label>
+                    <textarea name="description" id="description" class="form-control" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Save Course</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 <script>
-$(document).ready(function() {
+document.addEventListener('DOMContentLoaded', function() {
+    const courseForm = document.querySelector('#courseForm');
 
-    // ✅ Setup CSRF token for all AJAX requests
-    $.ajaxSetup({
-        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
+    // Open Add Modal
+    document.querySelector('button[data-bs-target="#addCourseModal"]').addEventListener('click', function(){
+        courseForm.reset();
+        document.querySelector('#course_id').value = '';
+        document.querySelector('.modal-title').textContent = 'Add Course';
     });
 
-    // ✅ Show alert
-    function showAlert(message) {
-        $('#alertBox').text(message).removeClass('d-none').fadeIn();
-        setTimeout(() => $('#alertBox').fadeOut(), 2000);
-    }
+    // Open Edit Modal
+    document.querySelectorAll('.editCourse').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const id = this.dataset.id;
+            document.querySelector('#course_id').value = id;
+            document.querySelector('#title').value = this.dataset.title;
+            document.querySelector('#slug').value = this.dataset.slug;
+            document.querySelector('#description').value = this.dataset.description;
+            document.querySelector('.modal-title').textContent = 'Edit Course';
 
-    // ✅ Add / Update Course
-    $('#courseForm').on('submit', function(e) {
+            const modalEl = document.getElementById('addCourseModal');
+            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modal.show();
+        });
+    });
+
+    // Add / Edit AJAX
+    courseForm.addEventListener('submit', function(e){
         e.preventDefault();
+        const id = document.querySelector('#course_id').value;
+        const url = id ? `/courses/${id}` : '{{ route("courses.store") }}';
+        const method = id ? 'PUT' : 'POST';
 
-        let id = $('#course_id').val();
-        let url = id ? `/courses/${id}` : `{{ route('courses.store') }}`;
-        let data = {
-            title: $('#title').val(),
-            slug: $('#slug').val(),
-            description: $('#description').val(),
-            _token: $('meta[name="csrf-token"]').attr('content')
-        };
-        if (id) data._method = 'PUT';
+        const formData = new FormData(courseForm);
 
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: data,
-            success: function(res) {
-                $('#courseForm')[0].reset();
-                $('#course_id').val('');
-                $('#saveBtn').text('Add Course');
-                loadCourses();
-                showAlert(res.message);
+        fetch(url, {
+            method: method,
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'X-Requested-With': 'XMLHttpRequest'
             },
-            error: function(xhr) {
-                console.log(xhr.responseText);
-                alert('Something went wrong. Check console.');
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.message){
+                const modalEl = document.getElementById('addCourseModal');
+                const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                modal.hide();
+                location.reload();
+            } else {
+                alert('Error saving course');
             }
-        });
+        })
+        .catch(err => console.log(err));
     });
 
-    // ✅ Load Courses (refresh table)
-    function loadCourses() {
-        $.get("{{ route('courses.index') }}", function(data) {
-            let tbody = '';
-            $(data.courses || data).each(function(_, c) {
-                tbody += `
-                    <tr data-id="${c.id}">
-                        <td>${c.id}</td>
-                        <td>${c.title}</td>
-                        <td>${c.slug}</td>
-                        <td>${c.description}</td>
-                        <td>
-                            <button class="btn btn-sm btn-warning editBtn">Edit</button>
-                            <button class="btn btn-sm btn-danger deleteBtn">Delete</button>
-                        </td>
-                    </tr>`;
+    // Delete Course
+    document.querySelectorAll('.deleteCourse').forEach(btn => {
+        btn.addEventListener('click', function(){
+            if(!confirm('Are you sure you want to delete this course?')) return;
+            const id = this.dataset.id;
+            fetch(`/courses/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.message){
+                    this.closest('tr').remove();
+                } else {
+                    alert('Error deleting course');
+                }
             });
-            $('#courseTable tbody').html(tbody);
-        });
-    }
-
-    // ✅ Edit
-    $(document).on('click', '.editBtn', function() {
-        let tr = $(this).closest('tr');
-        $('#course_id').val(tr.data('id'));
-        $('#title').val(tr.find('td:eq(1)').text());
-        $('#slug').val(tr.find('td:eq(2)').text());
-        $('#description').val(tr.find('td:eq(3)').text());
-        $('#saveBtn').text('Update Course');
-    });
-
-    // ✅ Delete
-    $(document).on('click', '.deleteBtn', function() {
-        if(!confirm('Are you sure?')) return;
-
-        let id = $(this).closest('tr').data('id');
-
-        $.ajax({
-            url: `/courses/${id}`,
-            type: 'POST',
-            data: {
-                _method: 'DELETE',
-                _token: $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(res) {
-                loadCourses();
-                showAlert(res.message);
-            },
-            error: function(xhr) {
-                console.log(xhr.responseText);
-                alert('Something went wrong. Check console.');
-            }
         });
     });
-
 });
 </script>
-
-</body>
-</html>
+@endsection

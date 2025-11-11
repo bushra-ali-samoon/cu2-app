@@ -997,6 +997,7 @@
          <span class="kt-menu-title text-sm font-medium text-foreground kt-menu-item-active:text-primary kt-menu-link-hover:!text-primary">
           Authentication
          </span>
+         
          <span class="kt-menu-arrow text-muted-foreground w-[20px] shrink-0 justify-end ms-1 me-[-10px]">
           <span class="inline-flex kt-menu-item-show:hidden">
            <i class="ki-filled ki-plus text-[11px]">
@@ -1275,6 +1276,31 @@
          </div>
         </div>
        </div>
+       <!-- Section heading -->
+<!-- <div class="kt-menu-item pt-2.25 pb-px">
+  <span class="kt-menu-heading uppercase text-xs font-medium text-muted-foreground ps-[10px] pe-[10px]" href="{{ route('signup.store') }}" Sign In  tabindex="0">
+    Courses
+  </span>
+</div> -->
+
+<!-- Menu item: Course List
+<div class="kt-menu-item">
+  <a href="{{ route('courses.store') }}" class="kt-menu-link">
+    <span class="kt-menu-icon">
+      <i class="ki-outline ki-book-open"></i>
+    </span>
+    <span class="kt-menu-title">All Courses</span>
+  </a>
+</div>
+
+  Menu item: Add New Course -->
+<!-- <div class="kt-menu-item">
+  <a href="#" class="kt-menu-link" data-bs-toggle="modal" data-bs-target="#courseModal">
+    <span class="kt-menu-title">Add Course</span>
+  </a>
+</div> --> 
+
+
        <div class="kt-menu-item pt-2.25 pb-px">
         <span class="kt-menu-heading uppercase text-xs font-medium text-muted-foreground ps-[10px] pe-[10px]">
          Apps

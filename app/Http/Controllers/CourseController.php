@@ -3,51 +3,49 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Course;
+ 
 class CourseController extends Controller
 {
+    // List all courses
     public function index()
     {
-        $course = Course::all();
-        return view('courses.index', compact('course'));
+        $courses = Course::all(); // get all courses
+        return view('courses.index', compact('courses'));
     }
-  public function store(Request $request)
-{
-    $request->validate([
-        'title' => 'required|string|max:255',
-        'slug' => 'required|string|max:255',
-        'description' => 'required|string|max:500',
-    ]);
 
-    $course = Course::create($request->only(['title', 'slug', 'description']));
+    // Store new course
+    public function store(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:courses,slug',
+            'description' => 'nullable|string',
+        ]);
 
-    return response()->json([
-        'status' => 'success',
-        'message' => 'Course added successfully!',
-        'data' => $course
-    ]);
+        $course = Course::create($request->only('title','slug','description'));
+
+        return response()->json(['message'=>'Course added successfully','course'=>$course]);
+    }
+
+    // Update existing course
+    public function update(Request $request, Course $course)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:courses,slug,'.$course->id,
+            'description' => 'nullable|string',
+        ]);
+
+        $course->update($request->only('title','slug','description'));
+
+        return response()->json(['message'=>'Course updated successfully','course'=>$course]);
+    }
+
+    // Delete course
+    public function destroy(Course $course)
+    {
+        $course->delete();
+        return response()->json(['message'=>'Course deleted successfully']);
+    }
 }
-
-public function update(Request $request, $id)
-{
-    $request->validate([
-    'title' => 'required|string|max:255',
-    'description' => 'nullable|string',
-]);
-
-$course->update([
-    'title' => $request->title,
-    'slug' => Str::slug($request->title),
-    'description' => $request->description,
-]);
-}
-public function destroy($id)
-{
-    Courses::findOrFail($id)->delete();
-    return response()->json([
-        'status' => 'success',
-        'message' => 'Course deleted successfully!'
-    ]);
-}
-}
-
 
