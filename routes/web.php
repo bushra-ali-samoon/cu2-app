@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ForgetPasswordController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\CourseTopicController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -41,3 +42,8 @@ Route::get('/courses', [CourseController::class, 'index'])->name('courses.index'
 Route::post('/courses', [CourseController::class, 'store'])->name('courses.store');
 Route::put('/courses/{course}', [CourseController::class, 'update'])->name('courses.update');
 Route::delete('/courses/{course}', [CourseController::class, 'destroy'])->name('courses.destroy');
+
+ 
+Route::get('/courses/{id}/topics', [CourseTopicController::class, 'index'])->name('topics.index');
+Route::post('/courses/{id}/topics', [CourseTopicController::class, 'store'])->name('topics.store');
+Route::delete('/topics/{id}', [CourseTopicController::class, 'destroy'])->name('topics.destroy');
