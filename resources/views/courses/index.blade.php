@@ -1,173 +1,148 @@
-@extends('layouts.app')
+@extends('layouts.noauth')
+@section('title', 'Courses')
 
-@section('content')
-<div class="app-main flex-column flex-row-fluid" id="kt_app_main">
-    <div class="d-flex flex-column flex-column-fluid">
-        <main class="app-content flex-column-fluid" id="kt_app_content">
-            <div id="kt_app_content_container" class="app-container container-xxl">
-
-                <!-- Card -->
-                <div class="card card-flush">
-                    <div class="card-header align-items-center py-5 gap-2 gap-md-5">
-                        <h3 class="card-title">Course Management</h3>
-                        <div class="card-toolbar">
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCourseModal">
-                                Add New Course
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body pt-0">
-                        <table class="table align-middle table-row-dashed fs-6 gy-5" id="coursesTable">
-                            <thead>
-                                <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
-                                    <th>ID</th>
-                                    <th>Title</th>
-                                    <th>Slug</th>
-                                    <th>Description</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($courses as $course)
-                                    <tr data-id="{{ $course->id }}">
-                                        <td>{{ $course->id }}</td>
-                                        <td>{{ $course->title }}</td>
-                                        <td>{{ $course->slug }}</td>
-                                        <td>{{ $course->description }}</td>
-                                        <td>
-                                            <button class="btn btn-sm btn-warning editCourse" 
-                                                data-id="{{ $course->id }}"
-                                                data-title="{{ $course->title }}"
-                                                data-slug="{{ $course->slug }}"
-                                                data-description="{{ $course->description }}">
-                                                Edit
-                                            </button>
-                                            <button class="btn btn-sm btn-danger deleteCourse" data-id="{{ $course->id }}">Delete</button>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <!-- End Card -->
-
-            </div>
-        </main>
+@section('form')
+<div class="container py-5">
+    <!-- Toggle Button -->
+    <div class="d-flex justify-content-end mb-4">
+        <button id="toggleViewBtn" class="btn btn-outline-primary">
+            📋 Show All Courses
+        </button>
     </div>
-</div>
 
-<!-- Add/Edit Course Modal -->
-<div class="modal fade" id="addCourseModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <form id="courseForm" class="modal-content">
-            @csrf
-            <input type="hidden" name="course_id" id="course_id">
-            <div class="modal-header">
-                <h5 class="modal-title">Add / Edit Course</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="mb-3">
-                    <label>Title</label>
-                    <input type="text" name="title" id="title" class="form-control" required>
+    <!-- Add Course Form -->
+    <div id="addCourseForm" class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0 fw-bold">➕ Add New Course</h4>
+        </div>
+        <div class="card-body p-4">
+            <form action="{{ route('courses.store') }}" method="POST">
+                @csrf
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold">Title</label>
+                        <input type="text" name="title" class="form-control" placeholder="Enter course title" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold">Slug</label>
+                        <input type="text" name="slug" class="form-control" placeholder="course-slug" required>
+                    </div>
                 </div>
                 <div class="mb-3">
-                    <label>Slug</label>
-                    <input type="text" name="slug" id="slug" class="form-control" required>
+                    <label class="form-label fw-semibold">Description</label>
+                    <textarea name="description" class="form-control" rows="3" placeholder="Brief course description"></textarea>
                 </div>
-                <div class="mb-3">
-                    <label>Description</label>
-                    <textarea name="description" id="description" class="form-control" rows="3"></textarea>
-                </div>
+                <button type="submit" class="btn btn-primary px-4">
+                    💾 Save Course
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Courses Table -->
+    <div id="coursesTable" class="card shadow-sm border-0" style="display:none;">
+        <div class="card-header bg-success text-white">
+            <h4 class="mb-0 fw-bold">📚 All Courses</h4>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr class="text-uppercase text-muted fw-bold">
+                            <th class="ps-4">ID</th>
+                            <th>Title</th>
+                            <th>Slug</th>
+                            <th>Description</th>
+                            <th class="text-end pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($courses as $course)
+                        <tr>
+                            <td class="ps-4 fw-semibold">{{ $course->id }}</td>
+                            <td class="fw-semibold text-primary">{{ $course->title }}</td>
+                            <td><code class="text-muted">{{ $course->slug }}</code></td>
+                            <td class="text-muted">{{ Str::limit($course->description, 50) }}</td>
+                            <td class="text-end pe-4">
+                                <a href="{{ route('courses.edit', $course->id) }}" class="btn btn-sm btn-outline-warning me-1">✏️ Edit</a>
+                                <form action="{{ route('courses.destroy', $course->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this course?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">🗑️ Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-muted">
+                                No courses found. Add your first course!
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">Save Course</button>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const courseForm = document.querySelector('#courseForm');
+document.addEventListener('DOMContentLoaded', function () {
+    const toggleBtn = document.getElementById('toggleViewBtn');
+    const formDiv = document.getElementById('addCourseForm');
+    const tableDiv = document.getElementById('coursesTable');
 
-    // Open Add Modal
-    document.querySelector('button[data-bs-target="#addCourseModal"]').addEventListener('click', function(){
-        courseForm.reset();
-        document.querySelector('#course_id').value = '';
-        document.querySelector('.modal-title').textContent = 'Add Course';
+    // Initialize - make sure table is hidden on load
+    tableDiv.style.display = 'none';
+    formDiv.style.display = 'block';
+
+    // Check if there's a hash in URL to show table
+    if(window.location.hash === '#courses') {
+        showTableView();
+    }
+
+    toggleBtn.addEventListener('click', function () {
+        if(formDiv.style.display !== 'none') {
+            showTableView();
+        } else {
+            showFormView();
+        }
     });
 
-    // Open Edit Modal
-    document.querySelectorAll('.editCourse').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const id = this.dataset.id;
-            document.querySelector('#course_id').value = id;
-            document.querySelector('#title').value = this.dataset.title;
-            document.querySelector('#slug').value = this.dataset.slug;
-            document.querySelector('#description').value = this.dataset.description;
-            document.querySelector('.modal-title').textContent = 'Edit Course';
+    function showTableView() {
+        formDiv.style.display = 'none';
+        tableDiv.style.display = 'block';
+        toggleBtn.innerHTML = '➕ Add New Course';
+        toggleBtn.classList.remove('btn-outline-primary');
+        toggleBtn.classList.add('btn-outline-success');
+        window.history.replaceState(null, null, '#courses');
+    }
 
-            const modalEl = document.getElementById('addCourseModal');
-            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-            modal.show();
-        });
-    });
-
-    // Add / Edit AJAX
-    courseForm.addEventListener('submit', function(e){
-        e.preventDefault();
-        const id = document.querySelector('#course_id').value;
-        const url = id ? `/courses/${id}` : '{{ route("courses.store") }}';
-        const method = id ? 'PUT' : 'POST';
-
-        const formData = new FormData(courseForm);
-
-        fetch(url, {
-            method: method,
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: formData
-        })
-        .then(res => res.json())
-        .then(data => {
-            if(data.message){
-                const modalEl = document.getElementById('addCourseModal');
-                const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-                modal.hide();
-                location.reload();
-            } else {
-                alert('Error saving course');
-            }
-        })
-        .catch(err => console.log(err));
-    });
-
-    // Delete Course
-    document.querySelectorAll('.deleteCourse').forEach(btn => {
-        btn.addEventListener('click', function(){
-            if(!confirm('Are you sure you want to delete this course?')) return;
-            const id = this.dataset.id;
-            fetch(`/courses/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(res => res.json())
-            .then(data => {
-                if(data.message){
-                    this.closest('tr').remove();
-                } else {
-                    alert('Error deleting course');
-                }
-            });
-        });
-    });
+    function showFormView() {
+        formDiv.style.display = 'block';
+        tableDiv.style.display = 'none';
+        toggleBtn.innerHTML = '📋 Show All Courses';
+        toggleBtn.classList.remove('btn-outline-success');
+        toggleBtn.classList.add('btn-outline-primary');
+        window.history.replaceState(null, null, ' ');
+    }
 });
 </script>
+
+<style>
+.card {
+    border-radius: 12px;
+}
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.1);
+}
+.table tbody tr:hover {
+    background-color: rgba(13, 110, 253, 0.02);
+}
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+}
+</style>
 @endsection

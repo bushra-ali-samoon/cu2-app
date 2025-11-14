@@ -44,6 +44,9 @@ Route::put('/courses/{course}', [CourseController::class, 'update'])->name('cour
 Route::delete('/courses/{course}', [CourseController::class, 'destroy'])->name('courses.destroy');
 
  
-Route::get('/courses/{id}/topics', [CourseTopicController::class, 'index'])->name('topics.index');
-Route::post('/courses/{id}/topics', [CourseTopicController::class, 'store'])->name('topics.store');
-Route::delete('/topics/{id}', [CourseTopicController::class, 'destroy'])->name('topics.destroy');
+Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
+Route::get('/courses/create', [CourseController::class, 'create'])->name('courses.create');
+Route::post('/courses', [CourseController::class, 'store'])->name('courses.store');
+Route::get('/courses/{course}/edit', [CourseController::class, 'edit'])->name('courses.edit');
+Route::put('/courses/{course}', [CourseController::class, 'update'])->name('courses.update');
+Route::delete('/courses/{course}', [CourseController::class, 'destroy'])->name('courses.destroy');
