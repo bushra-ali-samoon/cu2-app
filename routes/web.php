@@ -6,6 +6,9 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ForgetPasswordController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CourseTopicController;
+use App\Http\Controllers\QuizController;
+
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -44,9 +47,12 @@ Route::put('/courses/{course}', [CourseController::class, 'update'])->name('cour
 Route::delete('/courses/{course}', [CourseController::class, 'destroy'])->name('courses.destroy');
 
  
-Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
-Route::get('/courses/create', [CourseController::class, 'create'])->name('courses.create');
-Route::post('/courses', [CourseController::class, 'store'])->name('courses.store');
-Route::get('/courses/{course}/edit', [CourseController::class, 'edit'])->name('courses.edit');
-Route::put('/courses/{course}', [CourseController::class, 'update'])->name('courses.update');
-Route::delete('/courses/{course}', [CourseController::class, 'destroy'])->name('courses.destroy');
+Route::get('/courses/{id}/topics', [CourseTopicController::class, 'index'])->name('topics.index');
+Route::post('/courses/{id}/topics', [CourseTopicController::class, 'store'])->name('topics.store');
+Route::delete('/topics/{id}', [CourseTopicController::class, 'destroy'])->name('topics.destroy');
+
+
+Route::get('/topics/{topic}/quizzes', [QuizController::class, 'index'])->name('quizzes.index');
+Route::post('/topics/{topic}/quizzes', [QuizController::class, 'store'])->name('quizzes.store');
+Route::put('/quizzes/{quiz}', [QuizController::class, 'update'])->name('quizzes.update');
+Route::delete('/quizzes/{quiz}', [QuizController::class, 'destroy'])->name('quizzes.destroy');
