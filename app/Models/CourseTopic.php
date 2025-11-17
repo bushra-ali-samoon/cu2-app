@@ -27,8 +27,9 @@ class CourseTopic extends Model
     }
  public function quizzes()
 {
-    return $this->hasMany(Quiz::class, 'topic_id');
+    return $this->hasMany(Quiz::class);
 }
+
 
 
 }

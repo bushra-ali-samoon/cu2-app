@@ -26,6 +26,10 @@ class Quiz extends Model
     {
         return $this->belongsTo(CourseTopic::class, 'topic_id');
     }
+    use App\Models\Quiz;
+
+ 
+
 }
 
 

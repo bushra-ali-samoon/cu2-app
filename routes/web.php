@@ -51,8 +51,9 @@ Route::get('/courses/{id}/topics', [CourseTopicController::class, 'index'])->nam
 Route::post('/courses/{id}/topics', [CourseTopicController::class, 'store'])->name('topics.store');
 Route::delete('/topics/{id}', [CourseTopicController::class, 'destroy'])->name('topics.destroy');
 
-
-Route::get('/topics/{topic}/quizzes', [QuizController::class, 'index'])->name('quizzes.index');
+Route::get('/topics/{topic}/quizzes', [QuizController::class, 'index'])
+    ->name('quizzes.index');
 Route::post('/topics/{topic}/quizzes', [QuizController::class, 'store'])->name('quizzes.store');
-Route::put('/quizzes/{quiz}', [QuizController::class, 'update'])->name('quizzes.update');
+Route::post('/quizzes/{quiz}', [QuizController::class, 'update'])->name('quizzes.update');
 Route::delete('/quizzes/{quiz}', [QuizController::class, 'destroy'])->name('quizzes.destroy');
+Route::get('/quizzes/all', [QuizController::class, 'allQuizzes'])->name('quizzes.all');

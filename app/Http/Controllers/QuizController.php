@@ -5,36 +5,65 @@ namespace App\Http\Controllers;
 use App\Models\Quiz;
 use App\Models\CourseTopic;
 use Illuminate\Http\Request;
+ 
+
 class QuizController extends Controller
 {
-    // Show all quizzes for a topic
+    // ---------------- SHOW ALL QUIZZES ----------------
     public function index($topic_id)
     {
+        // Topic + quizzes load
         $topic = CourseTopic::with('quizzes')->findOrFail($topic_id);
-        return view('quizzes.index', compact('topic')); // Your Blade file
-    }
 
+        return view('quizzes.index', compact('topic'));
+    }
+public function allQuizzes()
+{
+    $quizzes = Quiz::with('topic')->get(); // also fetch related topic
+    return view('quizzes.all', compact('quizzes'));
+}
+    // ---------------- STORE QUIZ ----------------
     public function store(Request $request, $topic_id)
     {
-        $quiz = \App\Models\Quiz::create([
+        $request->validate([
+            'name' => 'required',
+            'duration_minutes' => 'required|numeric',
+            'total_marks' => 'required|numeric',
+        ]);
+
+        Quiz::create([
             'topic_id' => $topic_id,
             'name' => $request->name,
             'duration_minutes' => $request->duration_minutes,
-            'total_marks' => $request->total_marks
+            'total_marks' => $request->total_marks,
         ]);
 
-        return response()->json($quiz);
+        return response()->json(['message' => 'Quiz added successfully']);
     }
 
-    public function update(Request $request, \App\Models\Quiz $quiz)
+    // ---------------- UPDATE QUIZ ----------------
+    public function update(Request $request, Quiz $quiz)
     {
-        $quiz->update($request->only('name', 'duration_minutes', 'total_marks'));
-        return response()->json($quiz);
+        $request->validate([
+            'name' => 'required',
+            'duration_minutes' => 'required|numeric',
+            'total_marks' => 'required|numeric',
+        ]);
+
+        $quiz->update([
+            'name' => $request->name,
+            'duration_minutes' => $request->duration_minutes,
+            'total_marks' => $request->total_marks,
+        ]);
+
+        return response()->json(['message' => 'Quiz updated successfully']);
     }
 
-    public function destroy(\App\Models\Quiz $quiz)
+    // ---------------- DELETE QUIZ ----------------
+    public function destroy(Quiz $quiz)
     {
         $quiz->delete();
-        return response()->json(['success' => true]);
+
+        return response()->json(['message' => 'Quiz deleted']);
     }
 }

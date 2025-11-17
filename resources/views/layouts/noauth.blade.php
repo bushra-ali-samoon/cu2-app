@@ -1,13 +1,4 @@
-<!--
-Product: Metronic is a toolkit of UI components built with Tailwind CSS for developing scalable web applications quickly and efficiently
-Version: v9.3.2
-Author: Keenthemes
-Contact: support@keenthemes.com
-Website: https://www.keenthemes.com
-Support: https://devs.keenthemes.com
-Follow: https://www.twitter.com/keenthemes
-License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
--->
+ 
 <!DOCTYPE html>
 <html class="h-full" data-kt-theme="true" data-kt-theme-mode="light" dir="ltr" lang="en">
  <head><base href="../../../../../">
@@ -82,6 +73,8 @@ License: https://keenthemes.com/metronic/tailwind/docs/getting-started/license
    <div class="flex justify-center items-center p-8 lg:p-10 order-2 lg:order-1">
      
      @yield('form')
+          @yield('content')
+
     
    </div>
    <div class="lg:rounded-xl lg:border lg:border-border lg:m-5 order-1 lg:order-2 bg-top xxl:bg-center xl:bg-cover bg-no-repeat branded-bg">
