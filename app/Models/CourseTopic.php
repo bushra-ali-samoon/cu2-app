@@ -25,10 +25,12 @@ class CourseTopic extends Model
     {
         return $this->belongsTo(Course::class, 'course_id');
     }
- public function quizzes()
+public function quizzes()
 {
-    return $this->hasMany(Quiz::class);
+    return $this->hasMany(\App\Models\Quiz::class, 'course_topic_id');
 }
+
+
 
 
 

@@ -22,12 +22,12 @@ class Quiz extends Model
         'total_marks'
     ];
 
-    public function topic()
-    {
-        return $this->belongsTo(CourseTopic::class, 'topic_id');
-    }
-    use App\Models\Quiz;
+  public function topic()
+{
+    return $this->belongsTo(CourseTopic::class, 'topic_id');
+}
 
+ 
  
 
 }

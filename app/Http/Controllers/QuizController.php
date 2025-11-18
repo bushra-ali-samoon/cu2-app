@@ -11,17 +11,12 @@ class QuizController extends Controller
 {
     // ---------------- SHOW ALL QUIZZES ----------------
     public function index($topic_id)
-    {
-        // Topic + quizzes load
-        $topic = CourseTopic::with('quizzes')->findOrFail($topic_id);
-
-        return view('quizzes.index', compact('topic'));
-    }
-public function allQuizzes()
 {
-    $quizzes = Quiz::with('topic')->get(); // also fetch related topic
-    return view('quizzes.all', compact('quizzes'));
+    $topic = CourseTopic::with('quizzes')->findOrFail($topic_id);
+    return view('quizzes.index', compact('topic'));
 }
+
+    
     // ---------------- STORE QUIZ ----------------
     public function store(Request $request, $topic_id)
     {
